@@ -1,6 +1,5 @@
 package or.sid.bankaccountservice.services;
 
-import io.swagger.v3.oas.annotations.servers.Server;
 import or.sid.bankaccountservice.dto.BankAccountRequestDTO;
 import or.sid.bankaccountservice.dto.BankAccountResponseDTO;
 import or.sid.bankaccountservice.entities.BankAccount;
@@ -21,15 +20,33 @@ public class AccountServiceImpl implements AccountService {
     @Autowired
     private AccountMapper accountMapper;
     @Override
-    public BankAccountResponseDTO addAccount(BankAccountRequestDTO bankAccounRequestDTO) {
+    public BankAccountResponseDTO addAccount(BankAccountRequestDTO bankAccountRequesters) {
         BankAccount bankAccount=BankAccount.builder()
                 .id(UUID.randomUUID().toString())
                 .createdAt(new Date())
-                .balance(bankAccounRequestDTO.getBalance())
-                .currency(bankAccounRequestDTO.getCurrency())
+                .balance(bankAccountRequesters.getBalance())
+                .currency(bankAccountRequesters.getCurrency())
                 .build();
         BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
         BankAccountResponseDTO bankAccountResponseDTO= (BankAccountResponseDTO) accountMapper.fromBankAccount(savedBankAccount);
         return bankAccountResponseDTO;
+    }
+
+    @Override
+    public BankAccountResponseDTO updateAccount(String id, BankAccountRequestDTO bankAccountRequesters) {
+        BankAccount bankAccount=BankAccount.builder()
+                .id(id)
+                .createdAt(new Date())
+                .balance(bankAccountRequesters.getBalance())
+                .currency(bankAccountRequesters.getCurrency())
+                .build();
+        BankAccount savedBankAccount = bankAccountRepository.save(bankAccount);
+        BankAccountResponseDTO bankAccountResponseDTO= (BankAccountResponseDTO) accountMapper.fromBankAccount(savedBankAccount);
+        return bankAccountResponseDTO;
+    }
+
+    @Override
+    public void deleteAccount(String id){
+        bankAccountRepository.deleteById(id);
     }
 }
